@@ -29,7 +29,7 @@ class BaseAgent(object):
         self.env = env
         self.results_path = results_path
         random.seed(1)
-        self.results = {} 
+        self.results = {}
         self.losses = [] # For learning agents
     
     def write_results(self):
@@ -456,7 +456,7 @@ class Seq2SeqAgent(BaseAgent):
         """
         The dijkstra algorithm.
         Was called beam search to be consistent with existing work.
-        But it actually finds the Exact K paths with minimal listener log_prob.
+        But it actually finds the Exact K paths with smallest listener log_prob.
         :return:
         [{
             "scan": XXX
@@ -497,7 +497,7 @@ class Seq2SeqAgent(BaseAgent):
         ctx, h_t, c_t = self.encoder(seq, seq_lengths)
         ctx, h_t, c_t, ctx_mask = ctx[recover_idx], h_t[recover_idx], c_t[recover_idx], seq_mask[recover_idx]    # Recover the original order
 
-        # States:
+        # Dijk Graph States:
         id2state = [
             {make_state_id(ob['viewpoint'], -95):
                  {"next_viewpoint": ob['viewpoint'],
@@ -516,6 +516,8 @@ class Seq2SeqAgent(BaseAgent):
         finished = [set() for _ in range(batch_size)]
         graphs = [utils.FloydGraph() for _ in range(batch_size)]        # For the navigation path
         ended = np.array([False] * batch_size)
+
+        # Dijk Algorithm
         for _ in range(300):
             # Get the state with smallest score for each batch
             # If the batch is not ended, find the smallest item.
@@ -573,7 +575,7 @@ class Seq2SeqAgent(BaseAgent):
                                                       ctx, ctx_mask,
                                                       False)
 
-            # Update the states with the new viewpoint
+            # Update the dijk graph's states with the newly visited viewpoint
             candidate_mask = utils.length2mask(candidate_leng)
             logit.masked_fill_(candidate_mask, -float('inf'))
             log_probs = F.log_softmax(logit, 1)                              # Calculate the log_prob here
@@ -624,7 +626,7 @@ class Seq2SeqAgent(BaseAgent):
             if ended.all():
                 break
 
-        # Back to the start point
+        # Move back to the start point
         for i in range(batch_size):
             results[i]['dijk_path'].extend(graphs[i].path(results[i]['dijk_path'][-1], results[i]['dijk_path'][0]))
         """
@@ -682,7 +684,7 @@ class Seq2SeqAgent(BaseAgent):
         self.env.reset()
         results = self._dijkstra()
         """
-        return from self._beam_search()
+        return from self._dijkstra()
         [{
             "scan": XXX
             "instr_id":XXX,
@@ -696,6 +698,8 @@ class Seq2SeqAgent(BaseAgent):
             }]
         }]
         """
+
+        # Compute the speaker scores:
         for result in results:
             lengths = []
             num_paths = len(result['paths'])
