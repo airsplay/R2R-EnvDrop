@@ -1,8 +1,19 @@
 # Code and Data for Paper "Learning to Navigate Unseen Environments: Back Translation with Environmental Dropout" 
 
-## Environment
+## Environment Installation
+
+python requirements:
+```
+pip install networkx tensorboardX
+```
 
 ## Code
+
+### Speaker
+
+### Listener
+
+### Speaker + Listener
 
 ## Semantic Views
 As shown in Fig.6 of our paper which is the same to 
