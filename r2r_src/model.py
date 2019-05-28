@@ -22,18 +22,13 @@ class EncoderLSTM(nn.Module):
         self.num_directions = 2 if bidirectional else 1
         self.num_layers = num_layers
         self.embedding = nn.Embedding(vocab_size, embedding_size, padding_idx)
-        # Change the input_size to 1024 (elmo)
-        input_size = 1024 if args.elmo else embedding_size
+        input_size = embedding_size
         self.lstm = nn.LSTM(input_size, hidden_size, self.num_layers,
                             batch_first=True, dropout=dropout_ratio, 
                             bidirectional=bidirectional)
         self.encoder2decoder = nn.Linear(hidden_size * self.num_directions,
             hidden_size * self.num_directions
         )
-
-        # ELMO parameters
-        self.elmo_weight = torch.nn.Parameter(torch.ones(3), requires_grad=True)
-        self.gamma = torch.nn.Parameter(torch.ones(1), requires_grad=True)
 
     def init_state(self, inputs):
         ''' Initialize to zero cell states and hidden states.'''
@@ -54,10 +49,7 @@ class EncoderLSTM(nn.Module):
     def forward(self, inputs, lengths):
         ''' Expects input vocab indices as (batch, seq_len). Also requires a 
             list of lengths for dynamic batching. '''
-        if args.elmo:
-            embeds = (inputs * F.softmax(self.elmo_weight).view(1, -1, 1, 1)).sum(1) * self.gamma
-        else:
-            embeds = self.embedding(inputs)  # (batch, seq_len, embedding_size)
+        embeds = self.embedding(inputs)  # (batch, seq_len, embedding_size)
         embeds = self.drop(embeds)
         h0, c0 = self.init_state(inputs)
         packed_embeds = pack_padded_sequence(embeds, lengths, batch_first=True)

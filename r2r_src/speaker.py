@@ -215,19 +215,16 @@ class Speaker():
 
         # Get Image Input & Encode
         if features is not None:
-            assert not args.pack_lstm and insts is not None
+            # It is used in calulating the speaker score in beam-search
+            assert insts is not None
             (img_feats, can_feats), lengths = features
             ctx = self.encoder(can_feats, img_feats, lengths)
             batch_size = len(lengths)
         else:
             obs = self.env._get_obs()
             batch_size = len(obs)
-            if args.pack_lstm:
-                (img_feats, can_feats, first_feat), lengths = self.from_shortest_path(get_first_feat=True)      # Image Feature (from the shortest path)
-                ctx = self.encoder(can_feats, img_feats, lengths, first_feat)
-            else:
-                (img_feats, can_feats), lengths = self.from_shortest_path()      # Image Feature (from the shortest path)
-                ctx = self.encoder(can_feats, img_feats, lengths)
+            (img_feats, can_feats), lengths = self.from_shortest_path()      # Image Feature (from the shortest path)
+            ctx = self.encoder(can_feats, img_feats, lengths)
         h_t = torch.zeros(1, batch_size, args.rnn_dim).cuda()
         c_t = torch.zeros(1, batch_size, args.rnn_dim).cuda()
         ctx_mask = utils.length2mask(lengths)
@@ -238,6 +235,7 @@ class Speaker():
 
         # Decode
         logits, _, _ = self.decoder(insts, ctx, ctx_mask, h_t, c_t)
+
         # Because the softmax_loss only allow dim-1 to be logit,
         # So permute the output (batch_size, length, logit) --> (batch_size, logit, length)
         logits = logits.permute(0, 2, 1).contiguous()
