@@ -1,19 +1,39 @@
 # Code and Data for Paper "Learning to Navigate Unseen Environments: Back Translation with Environmental Dropout" 
 
 ## Environment Installation
-
-python requirements:
+Download Navigation Data:
 ```
-pip install networkx tensorboardX
+bash ./tasks/R2R/data/download.sh
+```
+
+Download Image Features for the Environment:
+```
+mkdir img_features
+wget https://www.dropbox.com/s/715bbj8yjz32ekf/ResNet-152-imagenet.zip -P img_features/
+cd img_features
+unzip ResNet-152-imagenet.zip
+```
+
+python requirements: Need python3.6
+```
+pip install -r python_requirements.txt
+```
+
+Install Room2Room Environments:
+```
+sudo apt-get install libjsoncpp-dev libepoxy-dev libglm-dev libosmesa6 libosmesa6-dev libglew-dev
+mkdir build && cd build
+cmake -DEGL_RENDERING=ON ..
+make -j8
 ```
 
 ## Code
 
 ### Speaker
 
-### Listener
+### Agent
 
-### Speaker + Listener
+### Agent + Speaker (Back Translation)
 
 ## Semantic Views
 As shown in Fig.6 of our paper which is the same to 

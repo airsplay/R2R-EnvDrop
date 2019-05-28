@@ -3,7 +3,7 @@
 import os
 import sys
 import re
-sys.path.append('buildpy36')
+sys.path.append('build')
 import MatterSim
 import string
 import json
