@@ -1,7 +1,5 @@
 # Code and Data for Paper "Learning to Navigate Unseen Environments: Back Translation with Environmental Dropout" 
 
-**Since PyTorch library has been updated to 1.X from 4.X. I am now upgrading the code for compatibility and testing the new code.  Current code is only for previewing and the running scripts would be released before NAACL(06/03). Thanks.**
-
 ## Environment Installation
 Download Navigation Data:
 ```
@@ -44,6 +42,14 @@ bash run/agent.bash 0
 0 is the id of GPU. It will train the agent and save the snapshot under snap/agent/
 
 ### Agent + Speaker (Back Translation)
+After pre-training the speaker and the agnet,
+```
+bash run/bt_envdrop.bash 0
+```
+0 is the id of GPU. 
+It will load the pre-trained agent and run back translation with environmental dropout.
+
+
 
 ### Implementation Details
 1. When training the speaker and listener, we drop out features as much as we can. It means that the image feature are dropped randomly (with a smaller dropout rate), which has been seen used in multiple vision papers. 

@@ -263,9 +263,6 @@ class Seq2SeqAgent(BaseAgent):
         # Reorder the language input for the encoder (do not ruin the original code)
         seq, seq_mask, seq_lengths, perm_idx = self._sort_batch(obs)
         perm_obs = obs[perm_idx]
-        if speaker is not None:     # Back Translation
-            assert len(noise) == batch_size
-            noise = noise[perm_idx]
 
         ctx, h_t, c_t = self.encoder(seq, seq_lengths)
         ctx_mask = seq_mask
@@ -300,8 +297,8 @@ class Seq2SeqAgent(BaseAgent):
 
             input_a_t, f_t, candidate_feat, candidate_leng = self.get_input_feat(perm_obs)
             if speaker is not None:       # Apply the env drop mask to the feat
-                candidate_feat[..., :-args.angle_feat_size] *= noise.view(-1, 1, self.feature_size)
-                f_t[..., :-args.angle_feat_size] *= noise.view(-1, 1, self.feature_size)
+                candidate_feat[..., :-args.angle_feat_size] *= noise
+                f_t[..., :-args.angle_feat_size] *= noise
 
             h_t, c_t, logit, h1 = self.decoder(input_a_t, f_t, candidate_feat,
                                                h_t, h1, c_t,
@@ -396,8 +393,8 @@ class Seq2SeqAgent(BaseAgent):
             # Last action in A2C
             input_a_t, f_t, candidate_feat, candidate_leng = self.get_input_feat(perm_obs)
             if speaker is not None:
-                candidate_feat[..., :-args.angle_feat_size] *= noise.view(-1, 1, self.feature_size)
-                f_t[..., :-args.angle_feat_size] *= noise.view(-1, 1, self.feature_size)
+                candidate_feat[..., :-args.angle_feat_size] *= noise
+                f_t[..., :-args.angle_feat_size] *= noise
             last_h_, _, _, _ = self.decoder(input_a_t, f_t, candidate_feat,
                                             h_t, h1, c_t,
                                             ctx, ctx_mask,

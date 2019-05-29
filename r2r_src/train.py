@@ -135,31 +135,27 @@ def train(train_env, tok, n_iters, log_every=100, val_envs={}, aug_env=None):
                 for _ in range(interval // 2):
                     listner.zero_grad()
                     listner.env = train_env
-                    # NOTE: For here, if make_noise = None. It means that the listener will not do any dropout
-                    # on the feature.
-                    # args.ml_weight = 0.05
 
                     # Train with GT data
-                    args.ml_weight = 0.1
+                    args.ml_weight = 0.2
                     listner.accumulate_gradient(feedback_method)
                     listner.env = aug_env
 
                     # Train with Back Translation
-                    # args.ml_weight = 0.2
-                    args.ml_weight = 0.4        # Sem-Configuration
-                    listner.accumulate_gradient(args.aug_feedback, speaker=speaker)
+                    args.ml_weight = 0.6        # Sem-Configuration
+                    listner.accumulate_gradient(feedback_method, speaker=speaker)
                     listner.optim_step()
             else:
                 for _ in range(interval // 2):
                     # Train with GT data
                     listner.env = train_env
-                    args.ml_weight = 0.1
+                    args.ml_weight = 0.2
                     listner.train(1, feedback=feedback_method)
 
                     # Train with Back Translation
                     listner.env = aug_env
-                    args.ml_weight = 0.4
-                    listner.train(1, feedback=args.aug_feedback, speaker=speaker)
+                    args.ml_weight = 0.6
+                    listner.train(1, feedback=feedback_method, speaker=speaker)
 
         # Log the training stats to tensorboard
         total = max(sum(listner.logs['total']), 1)

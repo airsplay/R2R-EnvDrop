@@ -290,8 +290,8 @@ class Speaker():
 
         # This code block is only used for the featdrop.
         if featdropmask is not None:
-            img_feats[..., :-args.angle_feat_size] *= featdropmask.view(-1, 1, 1, self.feature_size)
-            can_feats[..., :-args.angle_feat_size] *= featdropmask.view(-1, 1, self.feature_size)
+            img_feats[..., :-args.angle_feat_size] *= featdropmask
+            can_feats[..., :-args.angle_feat_size] *= featdropmask
 
         # Encoder
         ctx = self.encoder(can_feats, img_feats, lengths,
