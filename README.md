@@ -9,7 +9,7 @@ bash ./tasks/R2R/data/download.sh
 Download image features for environments:
 ```
 mkdir img_features
-wget https://www.dropbox.com/s/715bbj8yjz32ekf/ResNet-152-imagenet.zip -P img_features/
+wget https://www.dropbox.com/s/o57kxh2mn5rkx4o/ResNet-152-imagenet.zip -P img_features/
 cd img_features
 unzip ResNet-152-imagenet.zip
 ```
