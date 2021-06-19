@@ -1,5 +1,19 @@
 # Code and Data for Paper "Learning to Navigate Unseen Environments: Back Translation with Environmental Dropout" 
 
+## Note about PyTorch version (2021-06)
+The original results of 52% on val-unseen are produced with a specific version of PyTorch 0.4.x (see [issue](https://github.com/airsplay/R2R-EnvDrop/issues/17#issuecomment-595588756)).
+We are aware of that the results are stablely lower than 52% (around 51%) with PyTorch 0.8~1.2.
+
+With **PyTorch 1.7.1** and exactly the same code/script in this Github, the results magically, supersingly, and unreasonablely reach back to **53.5%** in accuracy. Here is the full log:
+```
+val_unseen Iter 139100 ,
+train , nav_error: 0.681, oracle_error: 0.490, steps: 25.227, lengths: 10.059, success_rate: 0.936, oracle_rate: 0.959, spl: 0.918, 
+val_seen , nav_error: 3.804, oracle_error: 2.414, steps: 27.729, lengths: 10.897, success_rate: 0.655, oracle_rate: 0.735, spl: 0.624, 
+val_unseen , nav_error: 5.067, oracle_error: 3.324, steps: 32.378, lengths: 12.098, success_rate: 0.535, oracle_rate: 0.607, spl: 0.488
+```
+These results conclude the two-year question that PyTorch version might have a largely influence, and the answer is True. I would like to share this information to you so everyone could keep an eye on the PyTorch version. 
+
+
 ## Environment Installation
 Download Room-to-Room navigation data:
 ```
