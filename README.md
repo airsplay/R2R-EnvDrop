@@ -1,6 +1,8 @@
 # Code and Data for Paper "Learning to Navigate Unseen Environments: Back Translation with Environmental Dropout" 
 
-## Note about PyTorch version (2021-06)
+**Please move to our new code base under CLIP-ViL: [https://github.com/clip-vil/CLIP-ViL/tree/master/CLIP-ViL-VLN](https://github.com/clip-vil/CLIP-ViL/tree/master/CLIP-ViL-VLN). The code logical is the same but the results are much higher with CLIP features (+6% success rate on [R2R](https://bringmeaspoon.org/)). We also provide the [RxR](https://github.com/google-research-datasets/RxR) training script there.**
+
+## Update note about PyTorch version (2021-06)
 The original results of 52% on val-unseen are produced with a specific version of PyTorch 0.4.x (see [issue](https://github.com/airsplay/R2R-EnvDrop/issues/17#issuecomment-595588756)).
 We are aware of that the results are stablely lower than 52% (around 51%) with PyTorch 0.8~1.2.
 
